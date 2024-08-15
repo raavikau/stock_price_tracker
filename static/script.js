@@ -34,11 +34,26 @@ $(document).ready(function(){
         updatePrices();
     });
 
+    $('#tickers-grid').on('click', '.remove-btn', function() {
+        var tickerToRemove = $(this).data('ticker');
+        tickers = tickers.filter(t => t !== tickerToRemove);
+        localStorage.setItem('tickers', JSON.stringify(tickers))
+        $(`#${tickerToRemove}`).remove();
+    });
+
     startUpdateCycle();
 });
 
 function addTickerToGrid(ticker) {
-    $('#tickers-grid').append(`<div id="${ticker}" class="stock-box"><h2>${ticker}</h2><p id="${ticker}-price"></p><p id="${ticker}-pct"></p></div>`)
+    $('#tickers-grid').append(
+        `<div id="${ticker}" class="stock-box">
+            <h2>${ticker}   <span id="${ticker}-status"></span></h2>
+            <p id="${ticker}-price"></p>
+            <p id="${ticker}-pct"></p>
+            <p id="${ticker}-pct"></p>
+            <button class="remove-btn" data-ticker="${ticker}">Remove</button>
+        </div>`
+    )
 }
 
 function updatePrices(){
@@ -55,11 +70,11 @@ function updatePrices(){
                 if (changePercent <= -2) {
                     colorClass = 'dark-red'
                 } else if (changePercent < 0) {
-                    colorClass = 'red'
+                    colorClass = 'green'
                 } else if (changePercent == 0) {
                     colorClass = 'gray'
                 } else if (changePercent <= 2) {
-                    colorClass = 'green'
+                    colorClass = 'red'
                 } else {
                     colorClass = 'dark-green'
                 }
@@ -72,10 +87,13 @@ function updatePrices(){
                 var flashClass;
                 if (lastPrices[ticker] > data.currentPrice) {
                     flashClass = 'red-flash';
+                    $(`#${ticker}-status`).text(`${'🔻'}`);
                 } else if (lastPrices[ticker] < data.currentPrice) {
                     flashClass = 'green-flash';
+                    $(`#${ticker}-status`).text(`${'🔺'}`);
                 } else {
                     flashClass = 'gray-flash';
+                    $(`#${ticker}-status`).text(`${'⚖️'}`);
                 }
                 lastPrices[ticker] = data.currentPrice;
 
