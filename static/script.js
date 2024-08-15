@@ -1,4 +1,5 @@
 var tickers = JSON.parse(localStorage.getItem('tickers')) || [];
+var lastPrices = {};
 var counter = 15;
 
 function startUpdateCycle() {
@@ -50,8 +51,38 @@ function updatePrices(){
             dataType: 'json',
             success: function(data) {
                 var changePercent = ((data.currentPrice - data.openPrice) / data.openPrice) * 100;
+                var colorClass;
+                if (changePercent <= -2) {
+                    colorClass = 'dark-red'
+                } else if (changePercent < 0) {
+                    colorClass = 'red'
+                } else if (changePercent == 0) {
+                    colorClass = 'gray'
+                } else if (changePercent <= 2) {
+                    colorClass = 'green'
+                } else {
+                    colorClass = 'dark-green'
+                }
+
                 $(`#${ticker}-price`).text(`$${data.currentPrice.toFixed(2)}`);
                 $(`#${ticker}-pct`).text(`${changePercent.toFixed(2)}%`);
+                $(`#${ticker}-price`).removeClass('dark-red red gray green dark-green').addClass(colorClass);
+                $(`#${ticker}-pct`).removeClass('dark-red red gray green dark-green').addClass(colorClass);
+
+                var flashClass;
+                if (lastPrices[ticker] > data.currentPrice) {
+                    flashClass = 'red-flash';
+                } else if (lastPrices[ticker] < data.currentPrice) {
+                    flashClass = 'green-flash';
+                } else {
+                    flashClass = 'gray-flash';
+                }
+                lastPrices[ticker] = data.currentPrice;
+
+                $(`#${ticker}`).addClass(flashClass);
+                setTimeout(function(){
+                    $(`#${ticker}`).removeClass(flashClass);
+                }, 1000);
             }
         });
     });
