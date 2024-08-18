@@ -17,28 +17,28 @@ function startUpdateCycle() {
 $(document).ready(function(){
 
     tickers.forEach(function(ticker){
-        addTickerToTable(ticker);
+        addTickerToTable(ticker);  // when doc ready add stored tickers
     });
 
     updatePrices();
 
-    $('#add-ticker-form').submit(function(e){
+    $('#add-ticker-form').submit(function(e){ // addition of new tickers
         e.preventDefault();
         var newTicker = $('#new-ticker').val().toUpperCase();
-        if (!tickers.includes(newTicker)) {
+        if (!tickers.includes(newTicker)) {  // ticker not in list
             tickers.push(newTicker);
-            localStorage.setItem('tickers', JSON.stringify(tickers))
+            localStorage.setItem('tickers', JSON.stringify(tickers)) // saved in local storage
             addTickerToTable(newTicker);
         }
         $('new-ticker').val('');
         updatePrices();
     });
 
-    $('#tickers-table').on('click', '.remove-btn', function() {
-        var tickerToRemove = $(this).data('ticker');
-        tickers = tickers.filter(t => t !== tickerToRemove);
-        localStorage.setItem('tickers', JSON.stringify(tickers))
-        $(`#${tickerToRemove}`).remove();
+    $('#tickers-table').on('click', '.remove-btn', function() {  // in ticker table, use .on(click..) will work that match remove-btn
+        var tickerToRemove = $(this).data('ticker');  // $this refers to .remove-btn .data retrieves value of the ticker
+        tickers = tickers.filter(t => t !== tickerToRemove); // filter create new array t, check condition ticker != tickerToRemove are kept
+        localStorage.setItem('tickers', JSON.stringify(tickers)) // new array, save back to local in json frmt, ensure remove ticker won't appear when page reload
+        $(`#${tickerToRemove}`).remove();  // delete row from dom
     });
 
     startUpdateCycle();
@@ -69,7 +69,7 @@ function updatePrices(){
                 var changePrice = data.currentPrice - data.openPrice
                 var changePercent = ((data.currentPrice - data.openPrice) / data.openPrice) * 100;
                 var colorClass;
-                if (changePercent <= -2) {
+                if (changePercent <= -2) {  // text based color on stock price movement
                     colorClass = 'dark-red'
                 } else if (changePercent < 0) {
                     colorClass = 'green'
@@ -87,8 +87,8 @@ function updatePrices(){
                 $(`#${ticker}-price`).removeClass('dark-red red gray green dark-green').addClass(colorClass);
                 $(`#${ticker}-pct`).removeClass('dark-red red gray green dark-green').addClass(colorClass);
 
-                var flashClass;
-                if (lastPrices[ticker] > data.currentPrice) {
+                var flashClass;  // flash effect to draw attention to price change
+                if (lastPrices[ticker] > data.currentPrice) {  // current price compare with previous
                     flashClass = 'red-flash';
                     $(`#${ticker}-status`).text(`${'🔻'}`);
                 } else if (lastPrices[ticker] < data.currentPrice) {
