@@ -14,6 +14,15 @@ function startUpdateCycle() {
     }, 1000)
 }
 
+document.getElementById("toggleButton").onclick = function(){
+    var content = document.getElementById("tickers-table");
+    if ( content.style.display === "none" ) {
+        content.style.display = "block";
+    } else {
+        content.style.display = "none";
+    }
+};
+
 $(document).ready(function(){
 
     tickers.forEach(function(ticker){
