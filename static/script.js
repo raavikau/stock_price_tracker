@@ -14,15 +14,14 @@ function startUpdateCycle() {
     }, 1000)
 }
 
-document.getElementById("toggleButton").onclick = function(){
-    var content = document.getElementById("tickers-table");
-    if ( content.style.display === "none" ) {
-        content.style.display = "block";
+function showHide() {
+    var data = document.getElementById("tickers-table");
+    if ( data.style.display === "none" ) {
+        data.style.display = "table";
     } else {
-        content.style.display = "none";
+        data.style.display = "none"
     }
-};
-
+}
 $(document).ready(function(){
 
     tickers.forEach(function(ticker){
